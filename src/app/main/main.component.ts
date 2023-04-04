@@ -9,6 +9,8 @@ import { MainService } from "./main.service";
 })
 export class MainComponent implements OnInit, OnDestroy {
 	subs: Subscription[] = [];
+	count: number;
+	delay: number;
 
 	constructor(private service: MainService) {}
 
@@ -16,7 +18,11 @@ export class MainComponent implements OnInit, OnDestroy {
 		this.subs.push(
 			this.service
 				.getParams()
-				.subscribe((params) => console.log("params", params))
+				.subscribe((params) => {
+					this.count = params.count;
+					this.count = params.delay;
+					console.log("params", params)
+				})
 		);
 	}
 

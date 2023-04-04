@@ -1,10 +1,19 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of, throwError } from "rxjs";
-import { catchError, tap } from "rxjs/operators";
+import { catchError, map, tap } from "rxjs/operators";
 
 interface IParams {
-	action: any;
+	action: "params";
+}
+
+interface IConcurrencyResponse {
+	count: string;
+	delay: string;
+}
+interface IConcurrency {
+	count: number;
+	delay: number;
 }
 
 @Injectable({
@@ -15,16 +24,17 @@ export class MainService {
 
 	constructor(private http: HttpClient) {}
 
-	getParams(): Observable<IParams> {
+	getParams(): Observable<IConcurrency> {
 		const headers = new HttpHeaders({ "Content-Type": "application/json" });
-		const params = { "action": "params" };
+		const params: IParams = { action: "params" };
 
 		return this.http
-			.post<IParams>(this.serverUrl, params, { headers })
+			.post<IConcurrencyResponse>(this.serverUrl, params, { headers })
 			.pipe(
-				tap((data) =>
-					console.log("createProduct: " + JSON.stringify(data))
-				),
+				map((params) => ({
+					count: parseInt(params.count),
+					delay: parseInt(params.delay),
+				})),
 				catchError(this.handleError)
 			);
 	}
