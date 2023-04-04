@@ -98,7 +98,7 @@ export class MainComponent implements OnInit, OnDestroy {
 	setResultByIndex(index: number, data: any) {
 		if (index < this.results.length) {
 			console.log("thread result by index", { id: index, data: data });
-			this.results[index].data.push(JSON.stringify(data));
+			this.results[index].data = [...this.results[index].data, JSON.stringify(data)];
 			this.results[index].id = this.getProcessName(index);
 		} else {
 			console.error("results index error", index, this.results);
