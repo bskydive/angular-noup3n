@@ -81,7 +81,7 @@ export class MainComponent implements OnInit, OnDestroy {
 		const name = this.getProcessName(index);
 
 		if (index < this.threads.length) {
-			this.results.push({ id: name, data: index });
+			this.results.push({ id: name, data: [index] });
 			console.log("thread spawn", { id: name, data: index });
 
 			this.subs.push(
