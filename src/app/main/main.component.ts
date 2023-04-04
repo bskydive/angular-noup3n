@@ -4,10 +4,12 @@ import { switchMap } from "rxjs-compat/operator/switchMap";
 import { map, take, tap } from "rxjs/operators";
 import { IConcurrency, MainService } from "./main.service";
 
+/** принимаем данные от каждого асинхронного потока в собственный массив */
 interface IProcessResult {
 	id: string;
-	data: any;
+	data: any[];
 }
+
 @Component({
 	selector: "app-main",
 	templateUrl: "./main.component.html",
@@ -17,16 +19,18 @@ export class MainComponent implements OnInit, OnDestroy {
 	subs: Subscription[] = [];
 	timerId: any;
 	params: IConcurrency;
-	maxResults = 200;
+	/** ограничение количества данных от каждого потока */
+	maxThreadResults = 200;
 	/** индекс - номер процесса */
 	results: IProcessResult[] = [];
 	threads: Observable<IProcessResult>[];
+	isLoading = false;
 
 	constructor(private service: MainService) {}
 
 	ngOnInit(): void {
 		this.solveTaskOne;
-		this.solveTaskTwo();
+		// this.solveTaskTwo();
 	}
 
 	/** Задание №1 - запрос параметров */
@@ -42,14 +46,24 @@ export class MainComponent implements OnInit, OnDestroy {
 		);
 	}
 
+	initData() {
+		this.isLoading = true;
+		this.results = [];
+	}
+
 	/** Задание №2 - запрос параметров, отправка запросов, ожидание, приём значений */
 	solveTaskTwo() {
+		this.initData();
+
 		this.subs.push(
 			this.service
 				.getParams()
 				.pipe(
 					tap((params) => {
-						this.params = { count: params.count, delay: params.delay };
+						this.params = {
+							count: params.count,
+							delay: params.delay,
+						};
 						this.threads = this.getThreads(params);
 						console.log("thread start", this.params, this.threads);
 						this.timerId = setInterval(
@@ -77,13 +91,14 @@ export class MainComponent implements OnInit, OnDestroy {
 			);
 		} else {
 			clearInterval(this.timerId);
+			this.isLoading = false;
 		}
 	}
 
 	setResultByIndex(index: number, data: any) {
 		if (index < this.results.length) {
 			console.log("thread result by index", { id: index, data: data });
-			this.results[index].data = JSON.stringify(data);
+			this.results[index].data.push(JSON.stringify(data));
 			this.results[index].id = this.getProcessName(index);
 		} else {
 			console.error("results index error", index, this.results);
@@ -108,7 +123,7 @@ export class MainComponent implements OnInit, OnDestroy {
 						// return { id: this.getProcessName(i), data: result };
 						return result;
 					}),
-					take(this.maxResults)
+					take(this.maxThreadResults)
 				)
 			);
 		}
