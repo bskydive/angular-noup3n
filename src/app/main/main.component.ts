@@ -49,7 +49,7 @@ export class MainComponent implements OnInit, OnDestroy {
 				.getParams()
 				.pipe(
 					tap((params) => {
-						this.params = { count: 10, delay: 10 };
+						this.params = { count: params.count, delay: params.delay };
 						this.threads = this.getThreads(params);
 						console.log("thread start", this.params, this.threads);
 						this.timerId = setInterval(
@@ -67,8 +67,8 @@ export class MainComponent implements OnInit, OnDestroy {
 		const name = this.getProcessName(index);
 
 		if (index < this.threads.length) {
-			console.log("thread spawn", name);
 			this.results.push({ id: name, data: index });
+			console.log("thread spawn", { id: name, data: index });
 
 			this.subs.push(
 				this.threads[index].subscribe((data) =>
@@ -82,6 +82,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
 	setResultByIndex(index: number, data: any) {
 		if (index < this.results.length) {
+			console.log("thread result by index", { id: index, data: data });
 			this.results[index].data = JSON.stringify(data);
 			this.results[index].id = this.getProcessName(index);
 		} else {
@@ -89,18 +90,23 @@ export class MainComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	/** запросы на сервер */
+	/**
+	 * запросы на сервер
+	 * можно раскомментировать добавление идентификатора процесса,
+	 * чтобы потом можно было заполнять массив результатов по этому индексу
+	 * прямо из результатов запроса/потока
+	 * сейчас он не нужен, т.к. индекс берётся синхронно в момент старта потока
+	 */
 	getThreads(params: IConcurrency): Observable<IProcessResult>[] {
 		const result: Observable<IProcessResult>[] = [];
-		let name: string;
 
 		for (let i = 0; i < params.count; i++) {
-			name = this.getProcessName(i);
 			result.push(
-				this.service.getProcess(name).pipe(
+				this.service.getProcess(this.getProcessName(i)).pipe(
 					map((result) => {
-						console.log("result", name, result);
-						return { id: name, data: result };
+						console.log("result", this.getProcessName(i), result);
+						// return { id: this.getProcessName(i), data: result };
+						return result;
 					}),
 					take(this.maxResults)
 				)
