@@ -15,7 +15,7 @@
 ## Как запустить
 
  * фронт
-	* поставить ноду через [nvm](https://github.com/nvm-sh/nvm), версия 14+
+	* поставить ноду через [nvm](https://github.com/nvm-sh/nvm), версия 10+
 	* втянуть зависимости `npm i`
 	* запустить сервер разработки `npm run start`
 	* открыть в браузере `http://localhost:4200/`
@@ -36,3 +36,5 @@
 
 			java -jar ServerTest.jar -p 8081 -c 10 -d 1000
 		```
+ * `curl -X 'POST' -v 'http://localhost:8081/' --data '{'action':'params'}' -H 'Content-Type:application/json'`
+

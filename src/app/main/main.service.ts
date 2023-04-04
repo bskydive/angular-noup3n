@@ -17,7 +17,7 @@ export class MainService {
 
 	getParams(): Observable<IParams> {
 		const headers = new HttpHeaders({ "Content-Type": "application/json" });
-		const params = { action: "params" };
+		const params = { "action": "params" };
 
 		return this.http
 			.post<IParams>(this.serverUrl, params, { headers })
