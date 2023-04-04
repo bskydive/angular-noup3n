@@ -4,14 +4,15 @@ import { Observable, of, throwError } from "rxjs";
 import { catchError, map, tap } from "rxjs/operators";
 
 interface IParams {
-	action: "params";
+	action: "params" | "process" | string;
+	id?: string;
 }
 
 interface IConcurrencyResponse {
 	count: string;
 	delay: string;
 }
-interface IConcurrency {
+export interface IConcurrency {
 	count: number;
 	delay: number;
 }
@@ -29,12 +30,23 @@ export class MainService {
 		const params: IParams = { action: "params" };
 
 		return this.http
-			.post<IConcurrencyResponse>(this.serverUrl, params, { headers })
+			.post<IConcurrencyResponse>(this.serverUrl, JSON.stringify(params), { headers })
 			.pipe(
 				map((params) => ({
 					count: parseInt(params.count),
 					delay: parseInt(params.delay),
 				})),
+				catchError(this.handleError)
+			);
+	}
+
+	getProcess(name: string): Observable<any> {
+		const headers = new HttpHeaders({ "Content-Type": "application/json" });
+		const params: IParams = { action: "process", id: name };
+
+		return this.http
+			.post<any>(this.serverUrl, JSON.stringify(params), { headers })
+			.pipe(
 				catchError(this.handleError)
 			);
 	}
