@@ -36,3 +36,9 @@
 		```
  * `curl -X 'POST' -v 'http://localhost:8081/' --data '{'action':'params'}' -H 'Content-Type:application/json'`
 
+## как пользоваться
+
+ * Результат работы с выводом консоли
+ * ![](./doc/screen1.jpg)
+ * В сетевых запросах видна отладочная инфа
+ * ![](./doc/screen2.jpg)
