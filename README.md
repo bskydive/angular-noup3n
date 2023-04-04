@@ -10,20 +10,20 @@
 
 вывести в список в этой форме время отправки запроса на бэк и ответы от backend - каждый запрос-ответ, отдельная строка. Нужно учесть, что порядок ответов может не совпадать с порядком запросов
 
-## Запускать backend 
+## Запускать backend
 
- * Вариант 1 `npm run start-be`
- * Вариант 2
-```bash
-	java -jar ServerTest.jar <parameters>
+ * Вариант 1: `npm run start-be`
+ * Вариант 2:
+	```bash
+		java -jar ServerTest.jar <parameters>
 
-	# parameters:
-	# -h help
-	# -p port
-	# -c count
-	# -d delay ms
-	# -t timeout ms
-	# Например:
+		# parameters:
+		# -h help
+		# -p port
+		# -c count
+		# -d delay ms
+		# -t timeout ms
+		# Например:
 
-	java -jar ServerTest.jar -p 8081 -c 10 -d 1000
-```
+		java -jar ServerTest.jar -p 8081 -c 10 -d 1000
+	```
